@@ -23,4 +23,3 @@ if($_SERVER["REQUEST_METHOD"] == "GET"){
 
 
 ?>
-cont = r.get("http://rajma.000webhostapp.com/manager1.php?action=read")
