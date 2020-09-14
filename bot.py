@@ -3,7 +3,6 @@ import telegram
 #from urllib.request import urlopen
 #from telegram import Update, Bot
 #import json
-#import re
 import os
 import time
 import threading
