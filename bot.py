@@ -10,7 +10,6 @@ import threading
 from selenium import webdriver
 import requests as req
 
-
 chrome_options = webdriver.ChromeOptions()
 chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 chrome_options.add_argument("--headless")
@@ -19,11 +18,11 @@ chrome_options.add_argument("--no-sandbox")
 driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 
 ##driver = webdriver.Chrome("C:/Users/pc/Desktop/Geet/chromedriver.exe")
-TOKEN = "API TOKEN"
+TOKEN = "1386853061:AAFufYGQpLfzaCWOjYOeKhgeTQ-FZdfFvWk"
 #TOKEN = "1347722221:AAEf6d-Jv_YqseJ0LUS7bz73KLQ2dfCuYeE"
 PORT = int(os.environ.get('PORT', 5000))
 case = False
-url = "LINK TO DATABASE"
+url = "http://ankitrajmahapatra22200112.000webhostapp.com/quoradbs.php?action="
 
 
 ##def get_answers(url):
