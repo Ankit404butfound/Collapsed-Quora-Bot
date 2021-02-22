@@ -65,7 +65,7 @@ def get_answers(url):
     try:
         cont = driver.get(url)
         if "www.quora.com/" in url:
-            elemen = driver.find_element_by_xpath('//*[@class="q-text qu-medium qu-fontSize--small qu-color--red"]')
+            elemen = driver.find_elements_by_xpath('//*[@class="q-text qu-medium qu-fontSize--small qu-color--red"]')[1]
             data = (elemen.text).split()[0]
             numofans = data
             case = True
