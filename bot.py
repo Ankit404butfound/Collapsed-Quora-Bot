@@ -5,6 +5,7 @@ import os
 import time
 import threading
 from selenium import webdriver
+import requests
 
 TOKEN = os.environ.get("TOKEN")
 PORT = int(os.environ.get('PORT', 5000))
@@ -43,12 +44,12 @@ def exists(url):
     return bool(data[0][0])
     
 
-chrome_options = webdriver.ChromeOptions()
-chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--no-sandbox")
-driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+# chrome_options = webdriver.ChromeOptions()
+# chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+# chrome_options.add_argument("--headless")
+# chrome_options.add_argument("--disable-dev-shm-usage")
+# chrome_options.add_argument("--no-sandbox")
+# driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 ##driver = webdriver.Chrome("C:/Users/pc/Desktop/Work/New folder (3)/drivers/chromedriver/win32/88.0.4324.96/chromedriver.exe")
 
 def get_answers(url):
@@ -57,9 +58,10 @@ def get_answers(url):
     print(url)
     try:
         if "www.quora.com/" in url:
-            cont = driver.get(url+"/answers")
-            elemen = driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div/div[4]/div/div[1]/div[3]/div/div[3]/div/div[1]/div')
-            data = (elemen.text).split()[0]
+            cont = requests.get(url+"/answers").text#driver.get(url+"/answers")
+            #elemen = driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div/div[4]/div/div[1]/div[3]/div/div[3]/div/div[1]/div')
+            #data = (elemen.text).split()[0]
+            data = cont.split("""\\"numPublicAnswers\\":""")[1].split(",")[0]
             numofans = data
             case = True
             return numofans, f"Account registered, you have written {numofans} answer/s\nYou will be notified when any of your answers collapses."
