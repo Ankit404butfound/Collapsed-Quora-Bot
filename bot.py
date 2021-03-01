@@ -7,7 +7,6 @@ import threading
 from selenium import webdriver
 
 TOKEN = os.environ.get("TOKEN")
-##TOKEN = "1386853061:AAFufYGQpLfzaCWOjYOeKhgeTQ-FZdfFvWk"
 PORT = int(os.environ.get('PORT', 5000))
 case = False
 ##conn = psycopg2.connect(dbname='ddnbc50g5regaq', user='kwtyyfzelcddzr', password='d468e0600d44da70d3b97864ed462ede2a4548b4acb9677633ec7ea43ad40c78', host='ec2-54-164-241-193.compute-1.amazonaws.com', port='5432')
