@@ -34,7 +34,9 @@ def update(ID, num):
 def execute(qur):
     cur.execute(qur)
     try:
+        conn.commit()
         return cur.fetchall()
+        
     except:
         conn.commit()
         return False
