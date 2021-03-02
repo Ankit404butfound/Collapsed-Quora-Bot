@@ -52,6 +52,16 @@ def exists(url):
 # driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 ##driver = webdriver.Chrome("C:/Users/pc/Desktop/Work/New folder (3)/drivers/chromedriver/win32/88.0.4324.96/chromedriver.exe")
 
+def executeit(bot, update):
+    message = update.message.text
+    message = message.replace("/execute","")
+    message = message.strip()
+    data = execute(message)
+    if data:
+        update.message.reply_text(str(data))
+    else:
+        update.message.reply_text("Command successfully executed")
+
 def get_answers(url):
     global case
     count = 0
@@ -162,6 +172,7 @@ def main():
     dp.add_handler(CommandHandler('notify',start))
     dp.add_handler(CommandHandler('help',help))
     dp.add_handler(CommandHandler('database',data))
+    dp.add_handler(CommandHandler('execute', executeit))
 ##    updater.start_polling()
     updater.start_webhook(listen="0.0.0.0",port=int(PORT),url_path=TOKEN)
     updater.bot.setWebhook('https://collapsedquora.herokuapp.com/' + TOKEN)
@@ -195,8 +206,7 @@ if __name__ == '__main__':
 
 # ##driver = webdriver.Chrome("C:/Users/pc/Desktop/Geet/chromedriver.exe")
 # TOKEN = os.environ.get("TOKEN")
-# #TOKEN = "1347722221:AAEf6d-Jv_YqseJ0LUS7bz73KLQ2dfCuYeE"
-# PORT = int(os.environ.get('PORT', 5000))
+# ## PORT = int(os.environ.get('PORT', 5000))
 # case = False
 # url = "http://ankitrajmahapatra22200112.000webhostapp.com/quoradbs.php?action="
 
