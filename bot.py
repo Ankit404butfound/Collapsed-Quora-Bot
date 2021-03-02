@@ -73,7 +73,7 @@ def get_answers(url):
             cont = requests.get(url+"/answers").text#driver.get(url+"/answers")
             #elemen = driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div/div[4]/div/div[1]/div[3]/div/div[3]/div/div[1]/div')
             #data = (elemen.text).split()[0]
-            data = cont.split("""\\"numPublicAnswers\\":""")[1].split(",")[0]
+            data = cont.replace("\\","").split(""""numPublicAnswers":""")[1].split(",")[0]
             numofans = data
             case = True
             return numofans, f"Account registered, you have written {numofans} answer/s\nYou will be notified when any of your answers collapses."
