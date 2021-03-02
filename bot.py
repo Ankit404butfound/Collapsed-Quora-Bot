@@ -174,7 +174,7 @@ def main():
     dp.add_handler(CommandHandler('notify',start))
     dp.add_handler(CommandHandler('help',help))
     dp.add_handler(CommandHandler('database',data))
-    dp.add_handler(CommandHandler('execute', executeit))
+    #dp.add_handler(CommandHandler('execute', executeit))
 ##    updater.start_polling()
     updater.start_webhook(listen="0.0.0.0",port=int(PORT),url_path=TOKEN)
     updater.bot.setWebhook('https://collapsedquora.herokuapp.com/' + TOKEN)
