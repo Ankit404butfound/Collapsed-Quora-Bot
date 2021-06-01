@@ -1,11 +1,12 @@
 import logging
+import asyncio
 from decouple import config
 from telethon.sync import TelegramClient, events
 from quora import User
 from quora.exceptions import ProfileNotFoundError
-
+import threading
 from watcher import Watcher
-
+from watcher.events.quora import AnswerCountChange
 from .utils import (
     extract_quora_username,
     get_answer_count,
@@ -24,10 +25,22 @@ logging.basicConfig(
 )
 
 
+def stateCustomizer(answerCount):
+    def wrapper(obj):
+        obj.answerCount = answerCount
+        return obj
+
+    return wrapper
+
+
 class Client(TelegramClient):
     def __init__(self, name, API_ID, API_HASH):
         super().__init__(name, API_ID, API_HASH)
         self.watcher = Watcher()
+        for username, answerCount in api.get_all_data():
+            self.watcher.add_quora(
+                username, stateInitializer=stateCustomizer(answerCount)
+            )
         self.dispatcher = self.watcher.dispatcher
 
 
@@ -51,6 +64,7 @@ async def register(event):
             f"Account registered, you have written {answer} answer/s\nYou will be notified when any of your answers collapses."
         )
         api.add_account(username, event.sender_id, event.sender.username, answer)
+        event.client.watcher.add_quora(username)
     except ProfileNotFoundError:
         await event.reply(f"No profile found with username {username}")
     except Exception as e:
@@ -58,6 +72,25 @@ async def register(event):
         print(e)
 
 
+@bot.dispatcher.on(AnswerCountChange)
+async def dispatch_event(event):
+    username = event.profile.username
+    tg_id = api.get_tg_id(username)
+    if event.countChange < 0:
+        await bot.send_message(
+            int(tg_id),
+            f"{event.countChange} answer(s) not visible in your account.\nIn case you haven't deleted any answer then, it might have collapsed.",
+        )
+    else:
+        await bot.send_message(
+            int(tg_id),
+            f"Congratulations for writing {event.countChange} new answer(s).\nIn case you have restored any previous answer, ignore this message.",
+        )
+
+
 def main():
+    tasks = []
     bot.start(bot_token=TOKEN)
+    loop = asyncio.get_event_loop()
+    loop.create_task(bot.watcher.start())
     bot.run_until_disconnected()
