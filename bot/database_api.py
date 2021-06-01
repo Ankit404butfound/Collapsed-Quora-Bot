@@ -62,3 +62,8 @@ def get_tg_id(quora_username):
         .first()
     )
     return account.tg_id
+
+
+def get_all_username():
+    accounts = SESSION.query(QuoraData).all()
+    return [account.quora_username for account in accounts]
