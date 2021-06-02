@@ -74,19 +74,21 @@ async def register(event):
 @bot.dispatcher.on(AnswerCountChange)
 async def dispatch_event(event):
     username = event.profile.username
-    tg_id = api.get_tg_id(username)
-    api.update_count(username, event.countChange)
-    if event.countChange < 0:
-        await bot.send_message(
-            int(tg_id),
-            f"{abs(event.countChange)} answer(s) not visible in your account.\nIn case you haven't deleted any answer then, it might have collapsed.",
-        )
-    else:
-        await bot.send_message(
-            int(tg_id),
-            f"Congratulations for writing {event.countChange} new answer(s).\nIn case you have restored any previous answer, ignore this message.",
-        )
-
+    try:
+        tg_id = api.get_tg_id(username)
+        api.update_count(username, event.countChange)
+        if event.countChange < 0:
+            await bot.send_message(
+                int(tg_id),
+                f"{abs(event.countChange)} answer(s) not visible in your account.\nIn case you haven't deleted any answer then, it might have collapsed.",
+            )
+        else:
+            await bot.send_message(
+                int(tg_id),
+                f"Congratulations for writing {event.countChange} new answer(s).\nIn case you have restored any previous answer, ignore this message.",
+            )
+    except Exception as e:
+        print(e)
 
 def main():
     tasks = []
