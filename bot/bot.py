@@ -4,7 +4,6 @@ from decouple import config
 from telethon.sync import TelegramClient, events
 from quora import User
 from quora.exceptions import ProfileNotFoundError
-import threading
 from watcher import Watcher
 from watcher.events.quora import AnswerCountChange
 from .utils import (
