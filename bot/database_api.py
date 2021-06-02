@@ -66,4 +66,14 @@ def get_tg_id(quora_username):
 
 def get_all_data():
     accounts = SESSION.query(QuoraData).all()
-    return [(account.quora_username,account.answer_count) for account in accounts]
+    return [(account.quora_username, account.answer_count) for account in accounts]
+
+
+def update_count(quora_username, countChange):
+    account = (
+        SESSION.query(QuoraData)
+        .filter(QuoraData.quora_username == quora_username)
+        .first()
+    )
+    account.answer_count += countChange
+    SESSION.commit()

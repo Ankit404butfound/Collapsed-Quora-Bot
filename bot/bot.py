@@ -75,10 +75,11 @@ async def register(event):
 async def dispatch_event(event):
     username = event.profile.username
     tg_id = api.get_tg_id(username)
+    api.update_count(username, event.countChange)
     if event.countChange < 0:
         await bot.send_message(
             int(tg_id),
-            f"{event.countChange} answer(s) not visible in your account.\nIn case you haven't deleted any answer then, it might have collapsed.",
+            f"{abs(event.countChange)} answer(s) not visible in your account.\nIn case you haven't deleted any answer then, it might have collapsed.",
         )
     else:
         await bot.send_message(
