@@ -16,11 +16,12 @@ from bot import database_api as api
 TOKEN = config("TOKEN")
 API_ID = config("APP_ID")
 API_HASH = config("API_HASH")
+LOGGING_LEVEL = int(config("LOGGING_LEVEL", 20))
 
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(message)s",
-    level=logging.INFO,
+    level=LOGGING_LEVEL,
 )
 
 
