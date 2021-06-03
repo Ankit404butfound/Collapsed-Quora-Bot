@@ -5,7 +5,10 @@ from telethon.sync import TelegramClient, events
 from quora import User
 from quora.exceptions import ProfileNotFoundError
 from watcher import Watcher
-from watcher.events.quora import AnswerCountChange
+from watcher.events.quora import (
+    AnswerCountChange,
+    FollowerCountChange,
+    )
 from .utils import (
     extract_quora_username,
     get_answer_count,
@@ -81,15 +84,35 @@ async def dispatch_event(event):
         if event.countChange < 0:
             await bot.send_message(
                 int(tg_id),
-                f"{abs(event.countChange)} answer(s) not visible in your account.\nIn case you haven't deleted any answer then, it might have collapsed.",
+                f"{abs(event.countChange)} answer(s) not visible in your account.\nIn case you haven't deleted any answer then, it might have collapsed.\nCurrent answer count: {event.profile.answerCount}",
             )
         else:
             await bot.send_message(
                 int(tg_id),
-                f"Congratulations for writing {event.countChange} new answer(s).\nIn case you have restored any previous answer, ignore this message.",
+                f"Congratulations for writing {event.countChange} new answer(s).\nIn case you have restored any previous answer, ignore this message.\nCurrent answer count: {event.profile.answerCount}",
             )
     except Exception as e:
         print(e)
+
+
+@bot.dispatcher.on(FollowerCountChange)
+async def dispatch_follower_event(event):
+    username = event.profile.username
+    try:
+        tg_id = api.get_tg_id(username)
+        if event.countChange < 0:
+            await bot.send_message(
+                int(tg_id),
+                f"{abs(event.countChange)} person unfollowed you.\nCurent followers: {event.profile.followerCount}",
+            )
+        else:
+            await bot.send_message(
+                int(tg_id),
+                f"Congratulations for gaining {event.countChange} new follower(s).\nCurrent Followers: {event.profile.followerCount}",
+            )
+    except Exception as e:
+        print(e)
+
 
 def main():
     tasks = []
