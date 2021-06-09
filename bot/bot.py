@@ -8,7 +8,7 @@ from watcher import Watcher
 from watcher.events.quora import (
     AnswerCountChange,
     FollowerCountChange,
-    )
+)
 from .utils import (
     extract_quora_username,
     get_answer_count,
@@ -42,7 +42,9 @@ class Client(TelegramClient):
         self.watcher = Watcher()
         for username, answerCount in api.get_all_data():
             self.watcher.add_quora(
-                username, stateInitializer=stateCustomizer(answerCount)
+                username,
+                stateInitializer=stateCustomizer(answerCount),
+                update_interval=60,
             )
         self.dispatcher = self.watcher.dispatcher
 
