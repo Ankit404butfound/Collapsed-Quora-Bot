@@ -1,5 +1,6 @@
 import logging
 import asyncio
+import time
 from decouple import config
 from telethon.sync import TelegramClient, events
 from quora import User
@@ -45,7 +46,8 @@ class Client(TelegramClient):
                 username,
                 stateInitializer=stateCustomizer(answerCount),
                 update_interval=300,
-            )
+                )
+            time.sleep(5)
         self.dispatcher = self.watcher.dispatcher
 
 
