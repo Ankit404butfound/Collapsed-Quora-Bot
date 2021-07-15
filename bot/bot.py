@@ -12,7 +12,7 @@ from watcher.events.quora import (
 )
 from .utils import (
     extract_quora_username,
-    get_answer_count,
+    get_answer_follower_count,
 )
 from bot import database_api as api
 
@@ -29,9 +29,10 @@ logging.basicConfig(
 )
 
 
-def stateCustomizer(answerCount):
+def stateCustomizer(answerCount, followerCount):
     def wrapper(obj):
         obj.answerCount = answerCount
+        obj.followerCount = followerCount
         return obj
 
     return wrapper
@@ -41,12 +42,12 @@ class Client(TelegramClient):
     def __init__(self, name, API_ID, API_HASH):
         super().__init__(name, API_ID, API_HASH)
         self.watcher = Watcher()
-        for username, answerCount in api.get_all_data():
+        for username, answerCount, followerCount in api.get_all_data():
             self.watcher.add_quora(
                 username,
-                stateInitializer=stateCustomizer(answerCount),
+                stateInitializer=stateCustomizer(answerCount, followerCount),
                 update_interval=100,
-                )
+            )
         self.dispatcher = self.watcher.dispatcher
 
 
@@ -65,11 +66,13 @@ async def register(event):
         await event.reply("This Quora profile is already registered.")
         return
     try:
-        answer = await get_answer_count(username)
+        answer, follower = await get_answer_follower_count(username)
         await event.reply(
             f"Account registered, you have written {answer} answer/s\nYou will be notified when any of your answers collapses."
         )
-        api.add_account(username, event.sender_id, event.sender.username, answer)
+        api.add_account(
+            username, event.sender_id, event.sender.username, answer, follower
+        )
         event.client.watcher.add_quora(username)
     except ProfileNotFoundError:
         await event.reply(f"No profile found with username {username}")
@@ -83,7 +86,7 @@ async def dispatch_event(event):
     username = event.profile.username
     try:
         tg_id = api.get_tg_id(username)
-        api.update_count(username, event.countChange)
+        api.update_answer_count(username, event.countChange)
         if event.countChange < 0:
             await bot.send_message(
                 int(tg_id),
@@ -103,6 +106,8 @@ async def dispatch_follower_event(event):
     username = event.profile.username
     try:
         tg_id = api.get_tg_id(username)
+        api.update_follower_count(username, event.countChange)
+
         if event.countChange < 0:
             await bot.send_message(
                 int(tg_id),
