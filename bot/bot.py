@@ -45,9 +45,8 @@ class Client(TelegramClient):
             self.watcher.add_quora(
                 username,
                 stateInitializer=stateCustomizer(answerCount),
-                update_interval=300,
+                update_interval=100,
                 )
-            time.sleep(5)
         self.dispatcher = self.watcher.dispatcher
 
 
