@@ -2,10 +2,10 @@ import re
 from quora import User
 
 
-async def get_answer_count(username_or_link):
+async def get_answer_follower_count(username_or_link):
     user = User(extract_quora_username(username_or_link))
     profile = await user.profile()
-    return profile.answerCount
+    return (profile.answerCount, profile.followerCount)
 
 
 def extract_quora_username(text):
