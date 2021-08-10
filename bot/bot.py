@@ -123,8 +123,9 @@ async def dispatch_follower_event(event):
 
 async def keepBotAlive():
     async with aiohttp.ClientSession() as session:
-        await session.get(BOT_URL)
-    await asyncio.sleep(25*60)
+        while True:
+            await session.get(BOT_URL)
+            await asyncio.sleep(25*60)
 
 def main():
     tasks = []
