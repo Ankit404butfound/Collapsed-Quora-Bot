@@ -15,13 +15,13 @@ from .utils import (
     get_answer_follower_count,
 )
 from bot import database_api as api
-
+import aiohttp
 
 TOKEN = config("TOKEN")
 API_ID = config("APP_ID")
 API_HASH = config("API_HASH")
 LOGGING_LEVEL = int(config("LOGGING_LEVEL", 20))
-
+BOT_URL = config("BOT_URL", None)
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(message)s",
@@ -121,10 +121,15 @@ async def dispatch_follower_event(event):
     except Exception as e:
         print(e)
 
+async def keepBotAlive():
+    async with aiohttp.ClientSession() as session:
+        await session.get(BOT_URL)
+    await asyncio.sleep(25*60)
 
 def main():
     tasks = []
     bot.start(bot_token=TOKEN)
     loop = asyncio.get_event_loop()
-    loop.create_task(bot.watcher.start())
+    loop.create_task(keepBotAlive())
+    loop.create_task(bot.watcher.run())
     bot.run_until_disconnected()
